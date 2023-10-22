@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title></title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script
+        		type="text/javascript"
+			src="{{ url_for('static', filename='js/index.js') }}"
+			></script>
+	</head>
+	<body>
+		<h1> NEXT fluege.de </h1>
+		<div id="input">
+			        <label for="flightclass">Klasse:</label> <br>
+                                <input type="radio" name="flightclass" value="economy" checked> 
+                                <label for="economy">Economy</label> <br>
+				<input type="radio" name="flightclass" value="premium_economy"> 
+				<label for="premiumeconomy">Premium Economy</label> <br>
+				<input type="radio" name="flightclass" value="buisness"> 
+				<label for="buisness">Buisness</label> <br>
+				<input type="radio" name="flightclass" value="first"> 
+				<label for="first">First</label> <br>
+			        <hr>
+				<label>Reisende:</label> <br>
+				<input type="number" name="adults" id="adults" value="1">
+				<label for="adults">Erwachsene</label> <br>
+				<input type="number" name="children" id="children" value="0">
+				<label for="children">Kinder</label> <br>
+				<input type="number" name="infants" id="infants" value="0">
+				<label for="infants">Babys</label> <br>
+				<hr>
+
+  				<label for="fromplace">Von:</label><br>
+  				<input type="text" id="fromplace" name="fromplace"><br>
+  				<label for="toPlace">Nach:</label><br>
+				<input type="text" id="toplace" name="toplace"><br>
+				<div id="second_locations" >
+				    <label for="fromplace2">Rückflug von:</label><br>
+  				    <input type="text" id="fromplace2" name="fromplace2"><br>
+				    <label for="toplace2">Rückflug nach:</label><br>
+  				    <input type="text" id="toplace2" name="toplace2"><br>				
+				</div>
+
+				<hr>		
+				<label for="flighttype">Flugart:</label><br>
+				<input type="radio" id="single" name="flighttype" checked value="single" onchange="input_changed()" >
+  				<label for="single">Nur Hinflug</label><br>
+  				<input type="radio" id="double" name="flighttype" value="double" onchange="input_changed()">
+  				<label for="double">Hin und Zurück</label><br>
+  				<input type="radio" id="openjaw" name="flighttype" value="open_jaw" onchange="input_changed()">
+  				<label for="openjaw">Gabelflug</label>
+				<hr>
+
+				<label for="date_from">Abflugsdatum Hinflug:</label>
+                                <input type="date" id="datefrom" name="date_from" value="1/1/2000"> <br>
+			        <div id = date2>
+					<label for="dateto">Abflugsdatum Rückflug:</label>
+                                        <input type="date" name="dateto" id="dateto" value="1/1/2000">		        	
+			        </div>
+
+                                <hr>
+				<input type="submit" name="submit" value="Finde Flug" onclick="input_submit()">
+				<hr>
+
+				<details>
+					<summary>Geheim</summary>
+					<label for="days_bevor_from">Tage vor Hinflug</label>
+					<input type="number" name="days_bevor_from" id=dateoffset1  value="0"><br>
+                                        <label for="days_after_from">Tage nach Hinflug</label>
+					<input type="number" name="days_after_from" id="dateoffset2" value="1"><br>
+                                        <label for="days_bevor_to">Tage vor Rückflug</label>
+					<input type="number" name="days_bevor_to" id="dateoffset3" value="1"><br>
+                                        <label for="days_after_to">Tage nach Rückflug</label>
+					<input type="number" name="days_after_to" id="dateoffset4" value="0"><br>
+				</details>
+		</div>
+		<hr id = "over results">
+		<div id="results">		
+		
+
+		</div>
+	<script>
+		init();
+	</script>	
+	</body>
+        
+</html>

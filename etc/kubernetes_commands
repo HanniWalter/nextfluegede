@@ -1,0 +1,12 @@
+install docker kubernetes minikube 
+start docker
+
+minikube start
+minikube dashboard
+
+
+
+"like docker build" 
+kubectl apply -f .\kubernetes\[].yaml
+for all yamls in folder 
+kubectl apply -f .\kubernetes\
