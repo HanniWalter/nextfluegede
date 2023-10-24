@@ -1,0 +1,13 @@
+# https://kubernetes.io/docs/concepts/workloads/pods/
+apiVersion: v1
+kind: Service
+metadata:
+  name: webservice
+spec:
+  type: NodePort
+  ports:
+    - targetPort: 5000
+      protocol: TCP
+      port: 80
+  selector:
+    app: webserver
