@@ -4,9 +4,14 @@ start docker
 minikube start
 minikube dashboard
 
-
+https://minikube.sigs.k8s.io/docs/handbook/pushing/#1-pushing-directly-to-the-in-cluster-docker-daemon-docker-env
 
 "like docker build" 
 kubectl apply -f .\kubernetes\[].yaml
 for all yamls in folder 
 kubectl apply -f .\kubernetes\
+
+
+get website
+minikube service webservice
+
