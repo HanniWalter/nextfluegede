@@ -1,5 +1,7 @@
 from flask import Flask, render_template, jsonify, request, abort
-import os
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -8,15 +10,12 @@ def main_page():
 
 @app.route("/searchflight", methods = ["POST"])
 def searchflights():
-    print("test1")
     if request.method == "POST":
-        print("test2")
         value = request.get_json()
-        print(value)
+        app.logger.info(value)
         response = jsonify({})
         response.headers.add('Access-Control-Allow-Origin', '*')
         return response
-
 
 #@app.route("/listing",methods = ['GET'])
 #def listing():

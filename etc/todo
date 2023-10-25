@@ -5,7 +5,6 @@ Frontend:
 
   Webservice:
     Error: 
-      - cross origin blokced error when using minikube
 
     ToDo:
       - overdo frontend
