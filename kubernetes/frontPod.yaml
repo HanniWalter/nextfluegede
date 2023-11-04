@@ -11,4 +11,10 @@ spec:
     image: website
     imagePullPolicy: Never
     ports:
-      - containerPort: 5000
+      - containerPort: 5101
+  - name: searchorderserver
+    image: sos
+    imagePullPolicy: Never
+    ports:
+      - containerPort: 5001
+

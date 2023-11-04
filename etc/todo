@@ -5,6 +5,7 @@ Frontend:
 
   Webservice:
     Error: 
+      - 415 
 
     ToDo:
       - overdo frontend
