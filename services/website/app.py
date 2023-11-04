@@ -1,5 +1,8 @@
 from flask import Flask, render_template, jsonify, request, abort
-import os
+import logging
+import requests
+logging.basicConfig(level=logging.DEBUG)
+import json
 app = Flask(__name__)
 
 @app.route("/")
@@ -8,14 +11,24 @@ def main_page():
 
 @app.route("/searchflight", methods = ["POST"])
 def searchflights():
-    print("test1")
     if request.method == "POST":
-        print("test2")
         value = request.get_json()
-        print(value)
+        app.logger.info(value)
         response = jsonify({})
         response.headers.add('Access-Control-Allow-Origin', '*')
+        
+        #logic
+        headers = {'Content-Type': 'application/json'}
+        data = {
+            "flightdata": "your_flight_data",
+            "websessionid": "your_websession_id"
+        }
+        data = json.dump(data)
+        response2 = requests.put("http://localhost:5001/registersearch",data= data, headers = headers)
+        print(response2)
         return response
+
+
 
 
 #@app.route("/listing",methods = ['GET'])
@@ -30,4 +43,4 @@ def teapot():
     return abort(418)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5101)

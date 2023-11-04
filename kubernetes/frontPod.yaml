@@ -2,11 +2,19 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "frontpod"
+  name: frontpod
   labels:
-    app: "frontend"
+    app: webserver
 spec:
   containers:
   - name: website
-    image: "website"
+    image: website
     imagePullPolicy: Never
+    ports:
+      - containerPort: 5101
+  - name: searchorderserver
+    image: sos
+    imagePullPolicy: Never
+    ports:
+      - containerPort: 5001
+

@@ -77,10 +77,10 @@ function search_json() {
 }
 
 function input_submit(){
-
-
-	const url = 'http://127.0.0.1:5000/searchflight'
-	var xmlHttp = new XMLHttpRequest();
+    	const currentHost = window.location.hostname;
+    	const currentPort = window.location.port;
+    	const url = `http://${currentHost}:${currentPort}/searchflight`
+    	var xmlHttp = new XMLHttpRequest();
     	xmlHttp.open( "POST", url );
 	xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
 	xmlHttp.send(JSON.stringify(search_json()));	

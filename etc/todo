@@ -1,0 +1,25 @@
+Frontend:
+  new services
+  - DataCleanup
+
+
+  Webservice:
+    Error: 
+      - 415 
+
+    ToDo:
+      - overdo frontend
+      - send Data to SOS
+
+  SOS: 
+    ToDo:
+      - take Data from Webserver
+      - enhance Data for Webserver
+      - DeployData to Webserver
+
+      -send searches
+      -take searches
+
+
+  
+
