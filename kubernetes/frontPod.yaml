@@ -7,14 +7,8 @@ metadata:
     app: webserver
 spec:
   containers:
-  - name: website
-    image: website
-    imagePullPolicy: Never
-    ports:
-      - containerPort: 5101
-  - name: searchorderserver
-    image: sos
-    imagePullPolicy: Never
-    ports:
-      - containerPort: 5001
-
+    - name: website
+      image: website
+      imagePullPolicy: Never
+      ports:
+        - containerPort: 5101
