@@ -5,5 +5,7 @@ resources:
   - rabbitmqdeployment.yaml
   - rabbitmqmanagement.yaml
 
-  - webservice.yaml
   - frontpod.yaml
+  - webservice.yaml
+
+  - providermanagerpod.yaml

@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../rabbitmq/rabbitmqservice.yaml
+  - ../rabbitmq/rabbitmqdeployment.yaml
+  - ../rabbitmq/rabbitmqmanagement.yaml
+
+  - providermanagerpod.yaml
+  - searchersimulatorpod.yaml
