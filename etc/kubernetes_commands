@@ -1,17 +1,33 @@
+#only firsttime
 install docker kubernetes minikube 
+
+
 start docker
 
 minikube start
 minikube dashboard
 
-https://minikube.sigs.k8s.io/docs/handbook/pushing/#1-pushing-directly-to-the-in-cluster-docker-daemon-docker-env
+#link kubernetes docker to local docker engine
+#https://minikube.sigs.k8s.io/docs/handbook/pushing/#1-pushing-directly-to-the-in-cluster-docker-daemon-docker-env
+#linux:
+eval $(minikube docker-env)
 
-"like docker build" 
-kubectl apply -f .\kubernetes\[].yaml
-for all yamls in folder 
+#build needed dockerimages
+docker build services/provider_manager/ -t providermanager:latest
+
+#for testing purposes:
+docker build services/searcher_simulator/ -t searcher:latest
+
+
+#run all kubernetes things OLD way:
+kubectl apply -f .\kubernetes\FILE.yaml
+#for all yamls in folder 
 kubectl apply -f .\kubernetes\
 
+#new way
+kubectl apply -k kubernetes/backend/kustomization.yaml 
 
-get website
+
+#get website
 minikube service webservice
 
