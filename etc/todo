@@ -12,14 +12,13 @@ Frontend:
       - send Data to SOS
 
   SOS: 
-    ToDo:
-      - take Data from Webserver
-      - enhance Data for Webserver
-      - DeployData to Webserver
 
-      -send searches
-      -take searches
 
+
+Rausgeschoben:
+  bessere Cabinen Klassen Filterung
+  wird nach buisness und first gesucht und dannach nur nach buisness wird das als 2 verschiedene Suche verstanden
+  
 
   
 
