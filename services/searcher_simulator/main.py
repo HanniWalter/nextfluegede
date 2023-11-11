@@ -2,6 +2,10 @@ import os
 import pika
 import time
 import threading
+import random
+import json
+import requests
+
 
 def rabbitmq_connection():
     service_name = "rabbitmqservice"
@@ -19,7 +23,25 @@ def rabbitmq_connection():
     connection = pika.BlockingConnection(connection_params)
     return connection
 
-def send_messages(rabbitmq):
+#build a nice little search
+def get_search(userid):
+    search = {}
+    with open("searches/001.json", 'r') as file:
+        data_dict = json.load(file)
+
+
+    search["search-parameters"] = data_dict["search-parameters"]
+    
+    response = requests.post("http://localhost:5110/hash", json= search)
+    print(response)
+
+    search["user-id"] = userid
+    return search
+
+def send_searches(rabbitmq, userid):
+    searchdict = get_search(userid=userid)
+    print(searchdict)
+    
     channel = rabbitmq.channel()
     time.sleep(1)
     queue_name = 'searchflight'
@@ -30,13 +52,14 @@ def send_messages(rabbitmq):
         b =channel.basic_publish(exchange='',
                       routing_key=queue_name,
                       body='Hello World!')
-        print("send hello world", b)
         time.sleep(10)
 
 def main():
-    rabbitmq = rabbitmq_connection()
+    userId = random.randint(1, 1000000)
+    #rabbitmq = rabbitmq_connection()
+    rabbitmq = None
     # Create a thread to send messages in the background
-    message_thread = threading.Thread(target=send_messages, args=(rabbitmq,))
+    message_thread = threading.Thread(target=send_searches, args=(rabbitmq,userId))
     message_thread.start()
     
     while True:

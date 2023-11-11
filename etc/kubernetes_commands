@@ -30,4 +30,3 @@ kubectl apply -k kubernetes/backend/kustomization.yaml
 
 #get website
 minikube service webservice
-

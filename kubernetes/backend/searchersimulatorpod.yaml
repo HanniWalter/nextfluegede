@@ -10,3 +10,7 @@ spec:
     - name: searchersimulator
       image: searchersimulator
       imagePullPolicy: Never
+    - name: hash_calculator
+      image: hash_calculator
+      imagePullPolicy: Never
+    

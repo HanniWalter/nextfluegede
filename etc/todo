@@ -11,13 +11,19 @@ Frontend:
       - overdo frontend
       - send Data to SOS
 
-  SOS: 
+RabbitMQ:
+  searcher simulator
+  include hasher
+  make random hashes
+Providermanager:
+  display results
+  integrate providersimulator
 
 
 
 Rausgeschoben:
   bessere Cabinen Klassen Filterung
-  wird nach buisness und first gesucht und dannach nur nach buisness wird das als 2 verschiedene Suche verstanden
+  wird nach buisness und first gesucht und dannach nur nach buisness wird das als 2 verschiedene Suche verstanden und caching funktioniert nicht
   
 
   
