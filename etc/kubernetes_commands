@@ -1,32 +1,33 @@
 #only firsttime
-install docker kubernetes minikube 
-
+install docker kubernetes minikube
 
 start docker
 
 minikube start
 minikube dashboard
 
-#link kubernetes docker to local docker engine
-#https://minikube.sigs.k8s.io/docs/handbook/pushing/#1-pushing-directly-to-the-in-cluster-docker-daemon-docker-env
+#link kubernetes docker to local docker engine #https://minikube.sigs.k8s.io/docs/handbook/pushing/#1-pushing-directly-to-the-in-cluster-docker-daemon-docker-env
 #linux:
 eval $(minikube docker-env)
+#PowerShell:
+& minikube -p minikube docker-env --shell powershell | Invoke-Expression
+#cmd:
+@FOR /f "tokens=\*" %i IN ('minikube -p minikube docker-env --shell cmd') DO @%i
 
 #build needed dockerimages
 docker build services/provider_manager/ -t providermanager:latest
+docker build .\services\hash_calculator\ -t hashcalculator
 
 #for testing purposes:
-docker build services/searcher_simulator/ -t searcher:latest
-
+docker build services/searcher_simulator/ -t searchersimulator:latest
 
 #run all kubernetes things OLD way:
 kubectl apply -f .\kubernetes\FILE.yaml
-#for all yamls in folder 
-kubectl apply -f .\kubernetes\
+#for all yamls in folder
+kubectl apply -f .\kubernetes
 
 #new way
-kubectl apply -k kubernetes/backend/kustomization.yaml 
-
+kubectl apply -k kubernetes/backend/
 
 #get website
 minikube service webservice

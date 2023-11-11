@@ -23,49 +23,50 @@ def rabbitmq_connection():
     connection = pika.BlockingConnection(connection_params)
     return connection
 
-#build a nice little search
+
 def get_search(userid):
     search = {}
     with open("searches/001.json", 'r') as file:
         data_dict = json.load(file)
 
-
     search["search-parameters"] = data_dict["search-parameters"]
-    
-    response = requests.post("http://localhost:5110/hash", json= search)
-    print(response)
-
+    headers = {'Content-Type': 'application/json'}
+    response = requests.post("http://localhost:5110/hash",
+                             json=search)
+    search["parameter-hash"] = response.json()["hash"]
     search["user-id"] = userid
     return search
 
+
 def send_searches(rabbitmq, userid):
     searchdict = get_search(userid=userid)
-    print(searchdict)
-    
     channel = rabbitmq.channel()
     time.sleep(1)
     queue_name = 'searchflight'
-    channel.queue_declare(queue=queue_name) 
+    channel.queue_declare(queue=queue_name)
     channel.confirm_delivery()
-    while True:        
+    while True:
         # send message
-        b =channel.basic_publish(exchange='',
-                      routing_key=queue_name,
-                      body='Hello World!')
+        b = channel.basic_publish(exchange='',
+                                  routing_key=queue_name,
+                                  body=json.dumps(searchdict)
+                                  )
         time.sleep(10)
+
 
 def main():
     userId = random.randint(1, 1000000)
-    #rabbitmq = rabbitmq_connection()
-    rabbitmq = None
+    rabbitmq = rabbitmq_connection()
     # Create a thread to send messages in the background
-    message_thread = threading.Thread(target=send_searches, args=(rabbitmq,userId))
+    message_thread = threading.Thread(
+        target=send_searches, args=(rabbitmq, userId))
     message_thread.start()
-    
+
     while True:
         pass
 
     rabbitmq.close()
+
 
 if __name__ == "__main__":
     print("Starting provider manager")
