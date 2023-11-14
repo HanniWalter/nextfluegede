@@ -11,13 +11,10 @@ Frontend:
       - overdo frontend
       - send Data to SOS
 
-RabbitMQ:
-  searcher simulator
-  include hasher
-  make random hashes
 Providermanager:
-  display results
   integrate providersimulator
+
+Build Cache:
 
 
 
