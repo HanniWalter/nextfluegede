@@ -1,6 +1,23 @@
 import os
 import pika
+import requests
+import json
+import redis 
+import datetime
 
+def read_provider_json():
+    with open('providerinfo.json', 'r') as file:
+        data = json.load(file)
+    return data
+
+def get_redis_client():
+    redis_host = 'localhost'
+    redis_port = 6379
+    redis_db = 0
+    return redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db)
+
+redis_client = get_redis_client()
+provider_info = read_provider_json()["provider"]
 
 def rabbitmq_channel():
     service_name = "rabbitmqservice"
@@ -19,6 +36,20 @@ def rabbitmq_channel():
     channel = connection.channel()
     return channel
 
+def get_results(search_parameter):
+    search = {}
+    search["search-parameters"] = search_parameter["search-parameters"]
+    
+    #todo remove hardcoding
+    search["mock-options"] =  {}
+    search["mock-options"][""] = 500 
+    search["mock-options"]["max-results"] = provider_info["max-results"]
+    search["mock-options"]["provider"] = provider_info["name"]
+
+    response = requests.post(provider_info["address"] ,json=search)
+    response = response.json()
+
+    #send response to enrichment
 
 def main():
     rabbitmq = rabbitmq_channel()
@@ -26,12 +57,30 @@ def main():
     while True:
         queue_name = 'searchflight'
         rabbitmq.queue_declare(queue=queue_name)
-        # get message
         method_frame, header_frame, body = rabbitmq.basic_get(queue=queue_name)
         if method_frame:
-            print(method_frame, header_frame, body)
             rabbitmq.basic_ack(method_frame.delivery_tag)
+            search = json.loads(body)
+            hash = search["parameter-hash"]
+            if redis_client.exists(hash):
+                print("refuse to work, hash already known", hash)
+            else:
+                current_datetime = datetime.datetime.now()
+                expiration_date = current_datetime + datetime.timedelta(seconds= provider_info["ttl"])
+                results = get_results(search)
+                process_results(results, search, expiration_date)
 
+                redis_client.set(hash, "")
+                redis_client.expireat(hash, expiration_date)
+                print("worked, hash is now known", hash)
+
+def process_results(results, search, expiration_time):
+    process_dict = {}
+    process_dict["results"] = results
+    process_dict["search"] = search
+    process_dict["expiration-time"] = expiration_time
+    pass
+  
 
 if __name__ == "__main__":
     print("Starting provider manager")

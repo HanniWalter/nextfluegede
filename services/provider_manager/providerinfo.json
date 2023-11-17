@@ -1,0 +1,9 @@
+{
+    "provider":{
+        "name":"travelfusion",
+        "address":"http://192.168.58.1:81/mock/search/",
+        "max-results": 3,
+        "ttl": 60
+
+    }
+}

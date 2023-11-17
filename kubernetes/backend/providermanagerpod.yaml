@@ -10,3 +10,8 @@ spec:
     - name: providermanager
       image: providermanager
       imagePullPolicy: Never
+    - name: redis
+      image: redis
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 6379  # Default Redis port
