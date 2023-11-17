@@ -48,6 +48,7 @@ def get_results(search_parameter):
 
     response = requests.post(provider_info["address"] ,json=search)
     response = response.json()
+    return response
 
     #send response to enrichment
 
@@ -75,12 +76,16 @@ def main():
                 print("worked, hash is now known", hash)
 
 def process_results(results, search, expiration_time):
-    process_dict = {}
+    process_dict = search
     process_dict["results"] = results
-    process_dict["search"] = search
-    process_dict["expiration-time"] = expiration_time
-    pass
-  
+    #process_dict["search"] = search
+    #to iso
+    process_dict["expiration-time"] = expiration_time.strftime("%Y-%m-%dT%H:%M:%S.%f")
+    
+    reprocessor_service_url = "http://reprocessorservice:5111" 
+    response = requests.put(f"{reprocessor_service_url}/reprocessor/", json=process_dict)
+    # return true if success status code
+    return response.status_code == 200
 
 if __name__ == "__main__":
     print("Starting provider manager")

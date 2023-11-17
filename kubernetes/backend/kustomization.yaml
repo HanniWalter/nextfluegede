@@ -5,3 +5,5 @@ resources:
 
   - providermanagerpod.yaml
   - searchersimulatorpod.yaml
+  - reprocessorpod.yaml
+  - reprocessorservice.yaml
