@@ -27,9 +27,11 @@ def rabbitmq_connection():
 def get_search(userid):
     search = {}
     with open("searches/001.json", 'r') as file:
-        data_dict = json.load(file)
-
-    search["search-parameters"] = data_dict["search-parameters"]
+        search_parameters = json.load(file)
+    with open("searches/001.json", 'r') as file:
+        pricing_parameters = json.load(file)
+    search["search-parameters"] = search_parameters["search-parameters"]
+    search["pricing_parameters"] = pricing_parameters["pricing_parameters"]
     headers = {'Content-Type': 'application/json'}
     response = requests.post("http://localhost:5110/hash",
                              json=search)
