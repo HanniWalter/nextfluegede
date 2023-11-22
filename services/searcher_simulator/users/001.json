@@ -3,8 +3,8 @@
         "curency": "EUR",
         "fee_flat": 0,
         "fee": 0.10,
-        "priceType": "NORMAL",
-        "usertype": "PREMIUM",
+        "price_type": "NORMAL",
+        "user_type": "PREMIUM",
         "device": "IOS"
       }
     }

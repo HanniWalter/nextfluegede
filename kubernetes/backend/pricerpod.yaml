@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pricerpod
+  labels:
+    app: backend
+spec:
+  containers:
+    - name: pricer
+      image: pricer
+      imagePullPolicy: Never
