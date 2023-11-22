@@ -53,7 +53,7 @@ def send_searches(rabbitmq, userid):
                                   routing_key='fullsearch',
                                   body=json.dumps(searchdict)
                                   )
-        print("sent message")
+        print("send message")
         time.sleep(10)
 
 
