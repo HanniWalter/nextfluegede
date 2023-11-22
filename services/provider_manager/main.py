@@ -4,6 +4,7 @@ import requests
 import json
 import redis 
 import datetime
+from pika.exchange_type import ExchangeType
 
 def read_provider_json():
     with open('providerinfo.json', 'r') as file:
@@ -52,28 +53,28 @@ def get_results(search_parameter):
 
     #send response to enrichment
 
+def on_filght_recived(ch, method, properties, body):
+    search = json.loads(body)
+    hash = search["parameter-hash"]
+    if redis_client.exists(hash):
+        print("refuse to work, hash already known", hash)
+    else:
+        current_datetime = datetime.datetime.now()
+        expiration_date = current_datetime + datetime.timedelta(seconds= provider_info["ttl"])
+        results = get_results(search)
+        process_results(results, search, expiration_date)
+        redis_client.set(hash, "")
+        redis_client.expireat(hash, expiration_date)
+        print("worked, hash is now known", hash)
+
+
 def main():
-    rabbitmq = rabbitmq_channel()
-
-    while True:
-        queue_name = 'searchflight'
-        rabbitmq.queue_declare(queue=queue_name)
-        method_frame, header_frame, body = rabbitmq.basic_get(queue=queue_name)
-        if method_frame:
-            rabbitmq.basic_ack(method_frame.delivery_tag)
-            search = json.loads(body)
-            hash = search["parameter-hash"]
-            if redis_client.exists(hash):
-                print("refuse to work, hash already known", hash)
-            else:
-                current_datetime = datetime.datetime.now()
-                expiration_date = current_datetime + datetime.timedelta(seconds= provider_info["ttl"])
-                results = get_results(search)
-                process_results(results, search, expiration_date)
-
-                redis_client.set(hash, "")
-                redis_client.expireat(hash, expiration_date)
-                print("worked, hash is now known", hash)
+    channel = rabbitmq_channel()
+    channel.exchange_declare(exchange='searchflight', exchange_type= ExchangeType.direct)
+    queue = channel.queue_declare(queue='cachequeue')
+    channel.queue_bind(exchange='searchflight', queue=queue.method.queue, routing_key='fullsearch')
+    channel.basic_consume(queue=queue.method.queue , on_message_callback= on_filght_recived, auto_ack=True)
+    channel.start_consuming() 
 
 def process_results(results, search, expiration_time):
     process_dict = search

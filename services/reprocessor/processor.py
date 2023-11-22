@@ -49,13 +49,22 @@ def process_result(raw_result):
 
 
 def process(data):
+    metadata = {}
+    metadata["search-parameters"] = data["search-parameters"]
+    metadata["pricing-parameters"] = data["pricing-parameters"]
+    metadata["parameter-hash"] = data["parameter-hash"]
+    metadata["user-id"] = data["user-id"]
+    metadata["expiration-time"] = data["expiration-time"]
+
     raw_results = data["results"]["result"]
     results = []
     for raw_result in raw_results:
         result = process_result(raw_result)
         if result is not None:
             results.append(result)
-    return results
+    ret = metadata
+    ret["results"] = results
+    return ret
 
 
 if __name__ == '__main__':

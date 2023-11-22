@@ -3,9 +3,9 @@ import os
 import pika
 import json
 import processor
+from pika.exchange_type import ExchangeType
 
 app = Flask(__name__)
-
 
 def rabbitmq_channel():
     service_name = "rabbitmqservice"
@@ -25,23 +25,27 @@ def rabbitmq_channel():
     return channel
 
 
-rabbitmq_channel = rabbitmq_channel()
+channel = rabbitmq_channel()
 
 
 @app.route("/reprocessor/", methods=["PUT"])
 def reprocessor():
-    # print request body
     processed_result = processor.process(request.json)
-
+    publish_data(processed_result)
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
 
 def publish_data(data):
-    ra
+    channel.exchange_declare(exchange='results',
+                             exchange_type=ExchangeType.direct)
+    b = channel.basic_publish(exchange='results',
+                              routing_key='wrongprice',
+                              body=json.dumps(data)
+                              )
+    print("published data")
 
 
 def main():
-    rabbitmq = rabbitmq_channel()
     app.run(debug=True, host='0.0.0.0', port=5111)
 
 
