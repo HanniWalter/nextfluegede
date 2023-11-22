@@ -42,7 +42,7 @@ def publish_data(data):
                               routing_key='wrongprice',
                               body=json.dumps(data)
                               )
-    print("published data")
+    print("published data, results:", len(data["results"]), "parameter-hash:", data["parameter-hash"] ) 
 
 
 def main():
