@@ -34,33 +34,30 @@ def rabbitmq_channel():
     channel = connection.channel()
     return channel
 
-def 
+def on_filght_recived(ch, method, properties, body):
+    print("search recived")
+    print(body)
 
 def main():
-    rabbitmq = rabbitmq_channel()
+    channel = rabbitmq_channel()
+    channel.exchange_declare(exchange='searchflight', exchange_type= ExchangeType.direct)
+    queue = channel.queue_declare(queue='cachequeue')
+    channel.queue_bind(exchange='searchflight', queue=queue.method.queue, routing_key='fullsearch')
+    channel.basic_consume(queue=queue.method.queue , on_message_callback= on_filght_recived, auto_ack=True)
+    channel.start_consuming()
+        #    return
+        #    if redis_client.exists(hash):
+        #        print("refuse to work, hash already known", hash)
+        #    else:
+        #        current_datetime = datetime.datetime.now()
+        #        expiration_date = current_datetime + \
+        #            datetime.timedelta(seconds=provider_info["ttl"])
+        #        results = get_results(search)
+        #        process_results(results, search, expiration_date)
 
-    while True:
-        rabbitmq.exchange_declare(exchange='searchflight', exchange_type= ExchangeType.direct)
-        queue = rabbitmq.queue_declare(queue='', durable=True)
-        rabbitmq.queue_bind(exchange='searchflight', queue='fullsearch', routing_key='fullsearch')
-        method_frame, header_frame, body = rabbitmq.basic_get(queue=queue_name)
-        if method_frame:
-            rabbitmq.basic_ack(method_frame.delivery_tag)
-            search = json.loads(body)
-
-            return
-            if redis_client.exists(hash):
-                print("refuse to work, hash already known", hash)
-            else:
-                current_datetime = datetime.datetime.now()
-                expiration_date = current_datetime + \
-                    datetime.timedelta(seconds=provider_info["ttl"])
-                results = get_results(search)
-                process_results(results, search, expiration_date)
-
-                redis_client.set(hash, "")
-                redis_client.expireat(hash, expiration_date)
-                print("worked, hash is now known", hash)
+        #        redis_client.set(hash, "")
+        #        redis_client.expireat(hash, expiration_date)
+        #        print("worked, hash is now known", hash)
 
 
 if __name__ == "__main__":

@@ -29,10 +29,10 @@ def get_search(userid):
     search = {}
     with open("searches/001.json", 'r') as file:
         search_parameters = json.load(file)
-    with open("searches/001.json", 'r') as file:
+    with open("users/001.json", 'r') as file:
         pricing_parameters = json.load(file)
     search["search-parameters"] = search_parameters["search-parameters"]
-    search["pricing_parameters"] = pricing_parameters["pricing_parameters"]
+    search["pricing-parameters"] = pricing_parameters["pricing-parameters"]
     headers = {'Content-Type': 'application/json'}
     response = requests.post("http://localhost:5110/hash",
                              json=search)
@@ -47,14 +47,13 @@ def send_searches(rabbitmq, userid):
     time.sleep(1)
     channel.exchange_declare(exchange='searchflight',
                              exchange_type=ExchangeType.direct)
-
-    channel.confirm_delivery()
     while True:
         # send message
         b = channel.basic_publish(exchange='searchflight',
                                   routing_key='fullsearch',
                                   body=json.dumps(searchdict)
                                   )
+        print("sent message")
         time.sleep(10)
 
 

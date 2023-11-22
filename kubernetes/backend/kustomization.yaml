@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - ../rabbitmq/
 
+  - cachepod.yaml
   - providermanagerpod.yaml
   - searchersimulatorpod.yaml
   - reprocessorpod.yaml
