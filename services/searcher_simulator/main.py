@@ -5,6 +5,7 @@ import threading
 import random
 import json
 import requests
+from pika.exchange_type import ExchangeType
 
 
 def rabbitmq_connection():
@@ -44,13 +45,14 @@ def send_searches(rabbitmq, userid):
     searchdict = get_search(userid=userid)
     channel = rabbitmq.channel()
     time.sleep(1)
-    queue_name = 'searchflight'
-    channel.queue_declare(queue=queue_name)
+    channel.exchange_declare(exchange='searchflight',
+                             exchange_type=ExchangeType.direct)
+
     channel.confirm_delivery()
     while True:
         # send message
-        b = channel.basic_publish(exchange='',
-                                  routing_key=queue_name,
+        b = channel.basic_publish(exchange='searchflight',
+                                  routing_key='fullsearch',
                                   body=json.dumps(searchdict)
                                   )
         time.sleep(10)
