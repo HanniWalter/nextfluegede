@@ -34,18 +34,12 @@ def rabbitmq_channel():
     channel = connection.channel()
     return channel
 
+
+
 def on_filght_recived(ch, method, properties, body):
     print("search recived")
-    print(body)
-
-def main():
-    channel = rabbitmq_channel()
-    channel.exchange_declare(exchange='searchflight', exchange_type= ExchangeType.direct)
-    queue = channel.queue_declare(queue='cachequeue')
-    channel.queue_bind(exchange='searchflight', queue=queue.method.queue, routing_key='fullsearch')
-    channel.basic_consume(queue=queue.method.queue , on_message_callback= on_filght_recived, auto_ack=True)
-    channel.start_consuming()
-        #    return
+    #print(body)
+            #    return
         #    if redis_client.exists(hash):
         #        print("refuse to work, hash already known", hash)
         #    else:
@@ -58,6 +52,26 @@ def main():
         #        redis_client.set(hash, "")
         #        redis_client.expireat(hash, expiration_date)
         #        print("worked, hash is now known", hash)
+
+def on_result_recived(ch, method, properties, body):
+    print("result recived")
+    print(body)
+
+def main():
+    channel = rabbitmq_channel()
+    
+    channel.exchange_declare(exchange='searchflight', exchange_type= ExchangeType.direct)
+    queue = channel.queue_declare(queue='cachequeue')
+    channel.queue_bind(exchange='searchflight', queue=queue.method.queue, routing_key='fullsearch')
+    channel.basic_consume(queue=queue.method.queue , on_message_callback= on_filght_recived, auto_ack=True)
+    
+    channel.exchange_declare(exchange='results', exchange_type=ExchangeType.direct)
+    results_queue = channel.queue_declare(queue='rightprice_cache')
+    channel.queue_bind(exchange='results', queue=results_queue.method.queue, routing_key='rightprice')
+    channel.basic_consume(queue=results_queue.method.queue, on_message_callback=on_result_recived, auto_ack=True)    
+    
+    channel.start_consuming()
+
 
 
 if __name__ == "__main__":
