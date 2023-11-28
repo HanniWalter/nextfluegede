@@ -23,6 +23,7 @@ def cleanup(key):
     dead_results = results_parent_db.zrangebyscore(key, 0, now)
     results_parent_db.zpopmin(key, len(dead_results))
 
+
 def set_parent_db_expiration(parameter_hash):
     last_entry = results_parent_db.zrevrange(
         parameter_hash, -1, -1, withscores=True)
@@ -37,7 +38,6 @@ def add_data(data):
     parameter_hash = data["parameter-hash"]
     cleanup(parameter_hash)
 
-
     key_existed = True
     if not results_parent_db.exists(parameter_hash):
         # create empty ordered set
@@ -45,11 +45,11 @@ def add_data(data):
 
     for result in data["results"]:
         data_expiration = datetime.datetime.strptime(result["expiration-time"],
-                                                 "%Y-%m-%dT%H:%M:%S.%f")
+                                                     "%Y-%m-%dT%H:%M:%S.%f")
         # get free key in child db
         result_key = result["id"]
         # add result to child db
-        results_child_db.set(result_key, result)
+        results_child_db.set(result_key, json.dumps(result))
         results_child_db.expireat(result_key, data_expiration)
         # add result to parent db
 
@@ -61,6 +61,7 @@ def add_data(data):
             key_existed = True
     set_parent_db_expiration(parameter_hash)
 
+
 def get_data(parameter_hash):
     now = datetime.datetime.now().timestamp()
 
@@ -71,7 +72,7 @@ def get_data(parameter_hash):
     for result in raw_results:
         result = results_child_db.get(result)
         if result is not None:
-            results.append(result)
+            results.append(json.loads(result))
 
     cleanup(parameter_hash)
     return results

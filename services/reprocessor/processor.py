@@ -5,6 +5,7 @@ intern_primary_key = 0
 
 
 def get_intern_primary_key():
+    global intern_primary_key
     intern_primary_key += 1
     return intern_primary_key
 
@@ -34,11 +35,12 @@ def process_leg(raw_leg):
     return leg
 
 
-def process_result(raw_result,expiration_time):
+def process_result(raw_result, expiration_time):
     price_components = raw_result["price-components"]
     result = {}
     result["expiration-time"] = expiration_time
     result["price-components"] = price_components
+    result["id"] = get_intern_primary_key()
     raw_itinerary = raw_result["_itinerary"]
     carriers = raw_itinerary["carriers"]
     provider = raw_itinerary["provider"]
@@ -53,7 +55,7 @@ def process_result(raw_result,expiration_time):
     _itinerary["carriers"] = carriers
     _itinerary["provider"] = provider
     _itinerary["legs"] = legs
-    _itinerary["id"] = get_intern_primary_key()
+
     result["_itinerary"] = _itinerary
     return result
 
@@ -69,7 +71,7 @@ def process(data):
     raw_results = data["results"]["result"]
     results = []
     for raw_result in raw_results:
-        result = process_result(raw_result,expiration_time=expiration_time)
+        result = process_result(raw_result, expiration_time=expiration_time)
         if result is not None:
             results.append(result)
     ret = metadata
