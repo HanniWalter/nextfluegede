@@ -14,6 +14,7 @@ kubectl delete -k kubernetes/backend/
 
 docker build services/provider_manager/ -t providermanager:latest
 docker build services/hash_calculator/ -t hashcalculator:latest
+docker build services/searcher_simulator2/ -t searchersimulator2:latest
 docker build services/searcher_simulator/ -t searchersimulator:latest
 docker build services/reprocessor/ -t reprocessor:latest
 docker build services/flight_cache -t flightcache:latest

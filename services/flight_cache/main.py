@@ -4,6 +4,7 @@ import requests
 import json
 import redis
 import datetime
+import custom_db_connection
 from pika.exchange_type import ExchangeType
 
 
@@ -15,6 +16,7 @@ def get_redis_client():
 
 
 redis_client = get_redis_client()
+
 
 
 def rabbitmq_channel():
@@ -34,28 +36,29 @@ def rabbitmq_channel():
     channel = connection.channel()
     return channel
 
-
+def publish_result(data):
+    channel = rabbitmq_channel()
+    channel.exchange_declare(exchange='results',
+                             exchange_type=ExchangeType.direct)
+    b = channel.basic_publish(exchange='results',
+                              routing_key='wrongprice',
+                              body=json.dumps(data)
+                              )
+    print("published data; parameter_hash:", data["parameter-hash"] )
 
 def on_filght_recived(ch, method, properties, body):
     print("search recived")
-    #print(body)
-            #    return
-        #    if redis_client.exists(hash):
-        #        print("refuse to work, hash already known", hash)
-        #    else:
-        #        current_datetime = datetime.datetime.now()
-        #        expiration_date = current_datetime + \
-        #            datetime.timedelta(seconds=provider_info["ttl"])
-        #        results = get_results(search)
-        #        process_results(results, search, expiration_date)
-
-        #        redis_client.set(hash, "")
-        #        redis_client.expireat(hash, expiration_date)
-        #        print("worked, hash is now known", hash)
+    data = json.loads(body)
+    parameter_hash = data["parameter-hash"]
+    results = custom_db_connection.get_data(parameter_hash)
+    data["results"] = results
+    publish_result(data)
 
 def on_result_recived(ch, method, properties, body):
-    print("result recived")
-    print(body)
+    
+    data = json.loads(body)
+    print("result recived", data["parameter-hash"], len(data["results"]))
+    custom_db_connection.add_data(data)
 
 def main():
     channel = rabbitmq_channel()

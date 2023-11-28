@@ -34,9 +34,10 @@ def process_leg(raw_leg):
     return leg
 
 
-def process_result(raw_result):
+def process_result(raw_result,expiration_time):
     price_components = raw_result["price-components"]
     result = {}
+    result["expiration-time"] = expiration_time
     result["price-components"] = price_components
     raw_itinerary = raw_result["_itinerary"]
     carriers = raw_itinerary["carriers"]
@@ -63,12 +64,12 @@ def process(data):
     metadata["pricing-parameters"] = data["pricing-parameters"]
     metadata["parameter-hash"] = data["parameter-hash"]
     metadata["user-id"] = data["user-id"]
-    metadata["expiration-time"] = data["expiration-time"]
+    expiration_time = data["expiration-time"]
 
     raw_results = data["results"]["result"]
     results = []
     for raw_result in raw_results:
-        result = process_result(raw_result)
+        result = process_result(raw_result,expiration_time=expiration_time)
         if result is not None:
             results.append(result)
     ret = metadata

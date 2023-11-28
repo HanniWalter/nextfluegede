@@ -9,7 +9,7 @@ def get_redis_client(db):
     redis_host = 'localhost'
     redis_port = 6379
     redis_db = 0
-    return redis.StrictRedis(host=redis_host, port=redis_port, db=db, password="mypassword")
+    return redis.StrictRedis(host=redis_host, port=redis_port, db=db, password=None)
 
 
 results_parent_db = get_redis_client(0)
@@ -23,12 +23,20 @@ def cleanup(key):
     dead_results = results_parent_db.zrangebyscore(key, 0, now)
     results_parent_db.zpopmin(key, len(dead_results))
 
+def set_parent_db_expiration(parameter_hash):
+    last_entry = results_parent_db.zrevrange(
+        parameter_hash, -1, -1, withscores=True)
+    if last_entry == []:
+        return
+    last_entry = last_entry[0][1]
+    partentexpire = datetime.datetime.fromtimestamp(last_entry)
+    results_parent_db.expireat(parameter_hash, partentexpire)
+
 
 def add_data(data):
     parameter_hash = data["parameter-hash"]
     cleanup(parameter_hash)
-    data_expiration = datetime.datetime.strptime(data["expiration-time"],
-                                                 "%Y-%m-%dT%H:%M:%S.%f")
+
 
     key_existed = True
     if not results_parent_db.exists(parameter_hash):
@@ -36,11 +44,12 @@ def add_data(data):
         key_existed = False
 
     for result in data["results"]:
-
+        data_expiration = datetime.datetime.strptime(result["expiration-time"],
+                                                 "%Y-%m-%dT%H:%M:%S.%f")
         # get free key in child db
         result_key = result["id"]
         # add result to child db
-        results_child_db.json().set(result_key, Path.root_path(), result)
+        results_child_db.set(result_key, result)
         results_child_db.expireat(result_key, data_expiration)
         # add result to parent db
 
@@ -50,11 +59,7 @@ def add_data(data):
         if not key_existed:
             results_parent_db.expireat(parameter_hash, data_expiration)
             key_existed = True
-    last_entry = results_parent_db.zrevrange(
-        parameter_hash, -1, -1, withscores=True)[0][1]
-    partentexpire = datetime.datetime.fromtimestamp(last_entry)
-    results_parent_db.expireat(parameter_hash, partentexpire)
-
+    set_parent_db_expiration(parameter_hash)
 
 def get_data(parameter_hash):
     now = datetime.datetime.now().timestamp()
@@ -64,7 +69,7 @@ def get_data(parameter_hash):
     raw_results = results_parent_db.zrangebyscore(
         parameter_hash, now, float("inf"))
     for result in raw_results:
-        result = results_child_db.json().get(result)
+        result = results_child_db.get(result)
         if result is not None:
             results.append(result)
 
@@ -82,7 +87,6 @@ if __name__ == "__main__":
     # read testdata
     with open("services/flight_cache/testdata/test.json") as f:
         results = json.load(f)
-    # in 2 min
     results["expiration-time"] = datetime.datetime.now() + \
         datetime.timedelta(minutes=2)
     results["expiration-time"] = results["expiration-time"].strftime(

@@ -7,5 +7,6 @@ resources:
   - cachepod.yaml
   - providermanagerpod.yaml
   - searchersimulatorpod.yaml
+  - searchersimulatorpod2.yaml
   - reprocessorpod.yaml
   - reprocessorservice.yaml

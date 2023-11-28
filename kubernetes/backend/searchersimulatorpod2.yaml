@@ -1,0 +1,15 @@
+# https://kubernetes.io/docs/concepts/workloads/pods/
+apiVersion: v1
+kind: Pod
+metadata:
+  name: searchersimulatorpod2
+  labels:
+    app: backend
+spec:
+  containers:
+    - name: searchersimulator2
+      image: searchersimulator2
+      imagePullPolicy: Never
+    - name: hashcalculator
+      image: hashcalculator
+      imagePullPolicy: Never
