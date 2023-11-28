@@ -1,6 +1,14 @@
 import json
 import os
 
+intern_primary_key = 0
+
+
+def get_intern_primary_key():
+    intern_primary_key += 1
+    return intern_primary_key
+
+
 dir_path = os.path.dirname(os.path.realpath(__file__))
 filter_data_path = os.path.join(dir_path, 'filter_data.json')
 with open(filter_data_path) as f:
@@ -44,6 +52,7 @@ def process_result(raw_result):
     _itinerary["carriers"] = carriers
     _itinerary["provider"] = provider
     _itinerary["legs"] = legs
+    _itinerary["id"] = get_intern_primary_key()
     result["_itinerary"] = _itinerary
     return result
 
