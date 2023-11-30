@@ -13,10 +13,6 @@ def read_provider_info():
     data["address"] = os.environ.get("PROVIDER_ADDRESS")
     data["max-results"] = int(os.environ.get("PROVIDER_MAX_RESULTS"))
     data["ttl"] = float(os.environ.get("PROVIDER_TTL"))
-
-    #with open('providerinfo.json', 'r') as file:
-    #    data = json.load(file)
-    print(data)
     return {"provider":data}
 
 def get_redis_client():

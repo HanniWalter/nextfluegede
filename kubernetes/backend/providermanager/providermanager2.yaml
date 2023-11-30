@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: providermanagerpod
+  name: providermanagerpod2
   labels:
     app: backend
 spec:
@@ -12,15 +12,15 @@ spec:
       imagePullPolicy: Never
       env:
         - name: PROVIDER_ID
-          value: "1"
+          value: "2"
         - name: PROVIDER_ADDRESS
           value: "http://192.168.58.1:81/mock/search/"
         - name: PROVIDER_NAME
-          value: "travelfusion"
+          value: "megaflight24"
         - name: PROVIDER_MAX_RESULTS
-          value: "50"
+          value: "100"
         - name: PROVIDER_TTL
-          value: "60"
+          value: "120"
     - name: redis
       image: redis
       imagePullPolicy: IfNotPresent

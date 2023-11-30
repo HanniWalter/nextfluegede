@@ -1,0 +1,29 @@
+# https://kubernetes.io/docs/concepts/workloads/pods/
+apiVersion: v1
+kind: Pod
+metadata:
+  name: providermanagerpod3
+  labels:
+    app: backend
+spec:
+  containers:
+    - name: providermanager
+      image: providermanager
+      imagePullPolicy: Never
+      env:
+        - name: PROVIDER_ID
+          value: "1"
+        - name: PROVIDER_ADDRESS
+          value: "http://192.168.58.1:81/mock/search/"
+        - name: PROVIDER_NAME
+          value: "travelfusion"
+        - name: PROVIDER_MAX_RESULTS
+          value: "30"
+        - name: PROVIDER_TTL
+          value: "-1"
+    - name: redis
+      image: redis
+      imagePullPolicy: IfNotPresent
+      ports:
+        - containerPort: 6379  # Default Redis port
+      
