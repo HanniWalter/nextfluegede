@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - ../rabbitmq/
   - providermanager
+  - searchagent
 
   #- pricerpod.yaml
   #- cachepod.yaml

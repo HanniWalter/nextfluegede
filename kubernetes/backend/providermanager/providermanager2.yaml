@@ -14,7 +14,7 @@ spec:
         - name: PROVIDER_ID
           value: "2"
         - name: PROVIDER_ADDRESS
-          value: "http://192.168.58.1:81/mock/search/"
+          value: "http://192.168.178.98:81/mock/search/"
         - name: PROVIDER_NAME
           value: "megaflight24"
         - name: PROVIDER_MAX_RESULTS
@@ -25,5 +25,4 @@ spec:
       image: redis
       imagePullPolicy: IfNotPresent
       ports:
-        - containerPort: 6379  # Default Redis port
-      
+        - containerPort: 6379 # Default Redis port

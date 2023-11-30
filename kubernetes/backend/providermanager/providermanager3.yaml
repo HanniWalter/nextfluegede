@@ -14,9 +14,9 @@ spec:
         - name: PROVIDER_ID
           value: "1"
         - name: PROVIDER_ADDRESS
-          value: "http://192.168.58.1:81/mock/search/"
+          value: "http://192.168.178.98:81/mock/search/"
         - name: PROVIDER_NAME
-          value: "travelfusion"
+          value: "globalflight"
         - name: PROVIDER_MAX_RESULTS
           value: "30"
         - name: PROVIDER_TTL
@@ -25,5 +25,4 @@ spec:
       image: redis
       imagePullPolicy: IfNotPresent
       ports:
-        - containerPort: 6379  # Default Redis port
-      
+        - containerPort: 6379 # Default Redis port

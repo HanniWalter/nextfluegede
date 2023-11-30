@@ -3,11 +3,23 @@ import agent
 app = Flask(__name__)
 
 
-@app.route("/registersearch/", methods=["PUT"])
-def reprocessor():
-    pass
+@app.route('/search/', methods=['POST'])
+def register_search():
+    body = request.json
+    print(body)
+    return jsonify({"status": "ok"})
 
-def register_search(search):
+
+@app.route('/search', methods=['GET'])
+def get_search():
+    body = request.json
+    print(body)
+
+
+@app.route('/teapot', methods=['GET'])
+def teapot():
+    abort(418)
+
 
 def main():
     app.run(debug=True, host='0.0.0.0', port=5102)

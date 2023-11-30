@@ -1,0 +1,30 @@
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: searchagentdeployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: searchagent
+          image: searchagent
+          imagePullPolicy: Never
+          ports:
+            - protocol: TCP
+              containerPort: 5102
+        - name: hashcalculator
+          image: hashcalculator
+          imagePullPolicy: Never
+        - name: redis
+          image: redis
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6379
