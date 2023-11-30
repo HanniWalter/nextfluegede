@@ -1,0 +1,26 @@
+{
+"search-parameters": {
+    "adults": 1,
+    "children": 0,
+    "infants": 0,
+    "agent": "fluege.de",
+    "request-type": "round-trip",
+    "legs": [
+      {
+        "depart-at": "2023-12-15",
+        "is-flexible-date": true,
+        "departure": "LEJ",
+        "arrival": "JFK"
+      },
+      {
+        "depart-at": "2023-12-22",
+        "is-flexible-date": true,
+        "departure": "JFK",
+        "arrival": "LEJ"
+      }
+    ],
+    "filter-cabin-class": [
+      "Economy"
+    ]
+  }
+}

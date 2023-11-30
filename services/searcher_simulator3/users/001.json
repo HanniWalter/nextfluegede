@@ -1,0 +1,10 @@
+{
+    "pricing-parameters": {
+        "curency": "EUR",
+        "fee_flat": 0,
+        "fee": 0.10,
+        "price_type": "NORMAL",
+        "user_type": "PREMIUM",
+        "device": "IOS"
+      }
+    }

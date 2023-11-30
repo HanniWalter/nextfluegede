@@ -6,7 +6,9 @@ import redis
 import datetime
 from pika.exchange_type import ExchangeType
 
-def read_provider_json():
+def read_provider_info():
+    
+
     with open('providerinfo.json', 'r') as file:
         data = json.load(file)
     return data
@@ -18,7 +20,7 @@ def get_redis_client():
     return redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db)
 
 redis_client = get_redis_client()
-provider_info = read_provider_json()["provider"]
+provider_info = read_provider_info()["provider"]
 
 def rabbitmq_channel():
     service_name = "rabbitmqservice"
