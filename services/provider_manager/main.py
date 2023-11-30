@@ -7,11 +7,17 @@ import datetime
 from pika.exchange_type import ExchangeType
 
 def read_provider_info():
-    
+    data = {}
+    data["id"] = int(os.environ.get("PROVIDER_ID"))
+    data["name"] = os.environ.get("PROVIDER_NAME")
+    data["address"] = os.environ.get("PROVIDER_ADDRESS")
+    data["max-results"] = int(os.environ.get("PROVIDER_MAX_RESULTS"))
+    data["ttl"] = float(os.environ.get("PROVIDER_TTL"))
 
-    with open('providerinfo.json', 'r') as file:
-        data = json.load(file)
-    return data
+    #with open('providerinfo.json', 'r') as file:
+    #    data = json.load(file)
+    print(data)
+    return {"provider":data}
 
 def get_redis_client():
     redis_host = 'localhost'
