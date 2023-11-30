@@ -62,15 +62,18 @@ def on_filght_recived(ch, method, properties, body):
     hash = search["parameter-hash"]
     if redis_client.exists(hash):
         print("refuse to work, hash already known", hash)
+        refuse_results(hash)
     else:
         current_datetime = datetime.datetime.now()
         expiration_date = current_datetime + datetime.timedelta(seconds= provider_info["ttl"])
         results = get_results(search)
-        process_results(results, search, expiration_date)
+        publish_results(results, search, expiration_date)
         redis_client.set(hash, "")
         redis_client.expireat(hash, expiration_date)
         print("worked, hash is now known", hash)
 
+def refuse_results(hash):
+    pass
 
 def main():
     channel = rabbitmq_channel()
@@ -80,11 +83,9 @@ def main():
     channel.basic_consume(queue=queue.method.queue , on_message_callback= on_filght_recived, auto_ack=True)
     channel.start_consuming() 
 
-def process_results(results, search, expiration_time):
+def publish_results(results, search, expiration_time):
     process_dict = search
     process_dict["results"] = results
-    #process_dict["search"] = search
-    #to iso
     process_dict["expiration-time"] = expiration_time.strftime("%Y-%m-%dT%H:%M:%S.%f")
     
     reprocessor_service_url = "http://reprocessorservice:5111" 
