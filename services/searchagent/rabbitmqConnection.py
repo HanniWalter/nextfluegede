@@ -29,7 +29,7 @@ class RabbitMQConnection:
         self.channel.exchange_declare(
             exchange='searchflight', exchange_type=ExchangeType.direct)
         b = self.channel.basic_publish(
-            exchange='searchflight', routing_key='fullsearch', body=json.dumps(data))
+            exchange='searchflight', routing_key='search', body=json.dumps(data))
         print("published data; parameter_hash:", data["parameter-hash"])
 
     def register_result_callback(self, callback):

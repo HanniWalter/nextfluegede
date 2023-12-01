@@ -6,7 +6,7 @@ app = Flask(__name__)
 @app.route('/search/', methods=['POST'])
 def register_search():
     body = request.json
-    print(body)
+    agent.registerSearch(body)
     return jsonify({"status": "ok"})
 
 
@@ -26,5 +26,5 @@ def main():
 
 
 if __name__ == "__main__":
-    print("starting reprocessor")
+    print("starting searchagent")
     main()

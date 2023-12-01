@@ -68,8 +68,6 @@ def main():
     while True:
         pass
 
-    rabbitmq.close()
-
 
 if __name__ == "__main__":
     print("Starting provider manager")
