@@ -12,11 +12,11 @@ spec:
       imagePullPolicy: Never
       env:
         - name: PROVIDER_ID
-          value: "1"
+          value: "3"
         - name: PROVIDER_ADDRESS
           value: "http://192.168.178.98:81/mock/search/"
         - name: PROVIDER_NAME
-          value: "globalflight"
+          value: "bing"
         - name: PROVIDER_MAX_RESULTS
           value: "30"
         - name: PROVIDER_TTL

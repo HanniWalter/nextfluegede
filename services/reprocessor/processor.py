@@ -63,9 +63,7 @@ def process_result(raw_result, expiration_time):
 def process(data):
     metadata = {}
     metadata["search-parameters"] = data["search-parameters"]
-    metadata["pricing-parameters"] = data["pricing-parameters"]
     metadata["parameter-hash"] = data["parameter-hash"]
-    metadata["user-id"] = data["user-id"]
     expiration_time = data["expiration-time"]
     metadata["results-origin"] = "provider"
 
@@ -76,7 +74,8 @@ def process(data):
         if result is not None:
             results.append(result)
     ret = metadata
-    ret["results"] = results
+    ret["results"] = {}
+    ret["results"]["result"] = results
     return ret
 
 

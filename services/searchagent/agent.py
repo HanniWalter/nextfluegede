@@ -9,20 +9,19 @@ rmq = rmqc.RabbitMQConnection()
 def redisConnection(db):
     dbdict = {"searches": 0, "results": 1}
 
-    r = redis.Redis(host='redis', port=6379, db=dbdict[db])
+    r = redis.Redis(host='localhost', port=6379, db=dbdict[db])
     return r
 
 
 def registerSearch(search):
-    print(search)
     headers = {'Content-Type': 'application/json'}
     response = requests.post("http://localhost:5110/hash",
                              json=search)
     search["parameter-hash"] = response.json()["hash"]
     # register search in db
     db = redisConnection("searches")
-    db.rpush(search["user-id"], search)
-    db.expire(search["parameter-hash"], 5*60)
+    db.rpush(search["user-id"], search["parameter-hash"])
+    db.expire(search["user-id"], 5*60)
 
     # listen for results
     # todo

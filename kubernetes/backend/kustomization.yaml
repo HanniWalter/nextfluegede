@@ -4,6 +4,7 @@ resources:
   - ../rabbitmq/
   - providermanager
   - searchagent
+  - reprocessor
 
   #- pricerpod.yaml
   #- cachepod.yaml
@@ -11,5 +12,3 @@ resources:
   #- searchersimulatorpod.yaml
   #- searchersimulatorpod2.yaml
   #- searchersimulatorpod3.yaml
-  #- reprocessorpod.yaml
-  #- reprocessorservice.yaml

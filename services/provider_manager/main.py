@@ -2,9 +2,10 @@ import os
 import pika
 import requests
 import json
-import redis 
+import redis
 import datetime
 from pika.exchange_type import ExchangeType
+
 
 def read_provider_info():
     data = {}
@@ -13,7 +14,8 @@ def read_provider_info():
     data["address"] = os.environ.get("PROVIDER_ADDRESS")
     data["max-results"] = int(os.environ.get("PROVIDER_MAX_RESULTS"))
     data["ttl"] = float(os.environ.get("PROVIDER_TTL"))
-    return {"provider":data}
+    return {"provider": data}
+
 
 def get_redis_client():
     redis_host = 'localhost'
@@ -21,8 +23,10 @@ def get_redis_client():
     redis_db = 0
     return redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db)
 
+
 redis_client = get_redis_client()
 provider_info = read_provider_info()["provider"]
+
 
 def rabbitmq_channel():
     service_name = "rabbitmqservice"
@@ -41,21 +45,20 @@ def rabbitmq_channel():
     channel = connection.channel()
     return channel
 
+
 def get_results(search_parameter):
     search = {}
     search["search-parameters"] = search_parameter["search-parameters"]
-    
-    #todo remove hardcoding
-    search["mock-options"] =  {}
-    search["mock-options"][""] = 500 
+
+    # todo remove hardcoding
+    search["mock-options"] = {}
     search["mock-options"]["max-results"] = provider_info["max-results"]
     search["mock-options"]["provider"] = provider_info["name"]
 
-    response = requests.post(provider_info["address"] ,json=search)
+    response = requests.post(provider_info["address"], json=search)
     response = response.json()
     return response
 
-    #send response to enrichment
 
 def on_filght_recived(ch, method, properties, body):
     search = json.loads(body)
@@ -65,33 +68,46 @@ def on_filght_recived(ch, method, properties, body):
         refuse_results(hash)
     else:
         current_datetime = datetime.datetime.now()
-        expiration_date = current_datetime + datetime.timedelta(seconds= provider_info["ttl"])
+        expiration_date = current_datetime + \
+            datetime.timedelta(seconds=provider_info["ttl"])
         results = get_results(search)
         publish_results(results, search, expiration_date)
         redis_client.set(hash, "")
         redis_client.expireat(hash, expiration_date)
         print("worked, hash is now known", hash)
 
+
 def refuse_results(hash):
     pass
 
+
 def main():
     channel = rabbitmq_channel()
-    channel.exchange_declare(exchange='searchflight', exchange_type= ExchangeType.direct)
-    queue = channel.queue_declare(queue='cachequeue')
-    channel.queue_bind(exchange='searchflight', queue=queue.method.queue, routing_key='fullsearch')
-    channel.basic_consume(queue=queue.method.queue , on_message_callback= on_filght_recived, auto_ack=True)
-    channel.start_consuming() 
+    channel.exchange_declare(exchange='searchflight',
+                             exchange_type=ExchangeType.fanout)
+    queue = channel.queue_declare(queue='', exclusive=True)
+    channel.queue_bind(exchange='searchflight',
+                       queue=queue.method.queue)
+    channel.basic_consume(queue=queue.method.queue,
+                          on_message_callback=on_filght_recived, auto_ack=True)
+    channel.start_consuming()
+
 
 def publish_results(results, search, expiration_time):
     process_dict = search
+    process_dict["results"] = {}
     process_dict["results"] = results
-    process_dict["expiration-time"] = expiration_time.strftime("%Y-%m-%dT%H:%M:%S.%f")
-    
-    reprocessor_service_url = "http://reprocessorservice:5111" 
-    response = requests.put(f"{reprocessor_service_url}/reprocessor/", json=process_dict)
+    process_dict["expiration-time"] = expiration_time.strftime(
+        "%Y-%m-%dT%H:%M:%S.%f")
+    print(process_dict)
+    print("publishing results")
+
+    reprocessor_service_url = "http://reprocessorservice:5111"
+    response = requests.put(
+        f"{reprocessor_service_url}/reprocessor/", json=process_dict)
     # return true if success status code
     return response.status_code == 200
+
 
 if __name__ == "__main__":
     print("Starting provider manager")

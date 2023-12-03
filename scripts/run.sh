@@ -9,7 +9,7 @@ fi
 
 
 kubectl delete -k kubernetes/backend/
-kubectl delete -k kubernetes/test/
+#kubectl delete -k kubernetes/test/
 
 
 docker build services/provider_manager/ -t providermanager:latest
@@ -23,7 +23,7 @@ docker build services/pricer -t pricer:latest
 docker build services/searchagent -t searchagent:latest
 
 kubectl apply -k kubernetes/backend/
-kubectl apply -k kubernetes/test/
-kubectl port-forward providermanagerpod 81:81
+#kubectl apply -k kubernetes/test/
+#kubectl port-forward providermanagerpod 81:81
 
 minikube dashboard

@@ -10,4 +10,4 @@ spec:
     - protocol: TCP
       port: 5102
       targetPort: 5102
-  type: LoadBalancer
+  clusterIP: None
