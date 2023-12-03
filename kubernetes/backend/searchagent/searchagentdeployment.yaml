@@ -28,3 +28,6 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 6379
+        - name: searchagentcallback
+          image: searchagentcallback
+          imagePullPolicy: Never

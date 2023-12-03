@@ -37,14 +37,11 @@ def reprocessor():
 
 
 def publish_data(data):
-    channel.exchange_declare(exchange='results',
-                             exchange_type=ExchangeType.direct)
+    provider_name = data["results-provider-name"]
+    channel.exchange_declare(
+        exchange='results', exchange_type=ExchangeType.topic)
     b = channel.basic_publish(exchange='results',
-                              routing_key='wrongprice',
-                              body=json.dumps(data)
-                              )
-    print("published data, results:", len(
-        data["results"]["result"]), "parameter-hash:", data["parameter-hash"])
+                              routing_key='results.'+data["parameter-hash"]+'.provider.'+provider_name+".success", body=json.dumps(data))
 
 
 def main():

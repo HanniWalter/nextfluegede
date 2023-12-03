@@ -21,6 +21,9 @@ docker build services/reprocessor/ -t reprocessor:latest
 docker build services/flight_cache -t flightcache:latest
 docker build services/pricer -t pricer:latest
 docker build services/searchagent -t searchagent:latest
+docker build services/searchagent_callback -t searchagentcallback:latest
+
+
 
 kubectl apply -k kubernetes/backend/
 #kubectl apply -k kubernetes/test/

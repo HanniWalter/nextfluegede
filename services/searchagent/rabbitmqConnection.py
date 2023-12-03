@@ -6,7 +6,8 @@ import os
 
 class RabbitMQConnection:
     def __init__(self):
-        self.channel = self.rabbitmq_connection().channel()
+        self.connection = self.rabbitmq_connection()
+        self.channel = self.connection.channel()
         self.channel.exchange_declare(
             exchange='searchflight', exchange_type=ExchangeType.fanout)
 
@@ -32,6 +33,3 @@ class RabbitMQConnection:
         b = self.channel.basic_publish(
             exchange='searchflight', routing_key='', body=json.dumps(data))
         print("published data; parameter_hash:", data["parameter-hash"])
-
-    def register_result_callback(self, callback):
-        pass
