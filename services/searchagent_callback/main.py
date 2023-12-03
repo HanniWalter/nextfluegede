@@ -1,6 +1,7 @@
 import pika
 import os
 from pika.exchange_type import ExchangeType
+import json
 
 
 def rabbitmq_connection():
@@ -29,13 +30,15 @@ def main():
     channel.queue_bind(
         exchange='results', queue=queue.method.queue, routing_key='results.#')
     channel.basic_consume(queue=queue.method.queue, auto_ack=True,
-                          on_message_callback=callback)
+                          on_message_callback=on_result_received)
     print("registered callback")
     channel.start_consuming()
 
 
-def callback(ch, method, properties, body):
-    print(properties)
+def on_result_received(ch, method, properties, body):
+    print("received result")
+    body = json.loads(body)
+
     print(body.keys())
 
 

@@ -8,7 +8,7 @@ from pika.exchange_type import ExchangeType
 app = Flask(__name__)
 
 
-def rabbitmq_channel():
+def rabbitmq_connection():
     service_name = "rabbitmqservice"
     port_name = "amqp"
 
@@ -22,11 +22,7 @@ def rabbitmq_channel():
     connection_params = pika.ConnectionParameters(service_host, service_port)
     print(f"Connecting to RabbitMQ on {service_host}:{service_port}")
     connection = pika.BlockingConnection(connection_params)
-    channel = connection.channel()
-    return channel
-
-
-channel = rabbitmq_channel()
+    return connection
 
 
 @app.route("/reprocessor/", methods=["PUT"])
@@ -38,10 +34,16 @@ def reprocessor():
 
 def publish_data(data):
     provider_name = data["results-provider-name"]
+
+    connection = rabbitmq_connection()
+    channel = connection.channel()
     channel.exchange_declare(
         exchange='results', exchange_type=ExchangeType.topic)
+
     b = channel.basic_publish(exchange='results',
-                              routing_key='results.'+data["parameter-hash"]+'.provider.'+provider_name+".success", body=json.dumps(data))
+                              routing_key='results.'+str(data["parameter-hash"])+'.provider.'+provider_name+".success", body=json.dumps(data))
+    print("publishing data; parameter_hash:", data["parameter-hash"])
+    connection.close()
 
 
 def main():

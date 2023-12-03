@@ -66,7 +66,7 @@ def process(data):
     metadata["parameter-hash"] = data["parameter-hash"]
     expiration_time = data["expiration-time"]
     metadata["results-origin"] = "provider"
-    metadata["results-provider-name"] = data["mock-options"]["provider"]
+    metadata["results-provider-name"] = data["provider-name"]
 
     raw_results = data["results"]["result"]
     results = []

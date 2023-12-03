@@ -28,7 +28,9 @@ def single_search(userid):
 def main():
     userId = 1
 
-    time.sleep(8)
+    time.sleep(4)
+    single_search(userid=42)
+    time.sleep(2)
     single_search(userid=42)
     while True:
         pass

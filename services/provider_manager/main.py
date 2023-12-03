@@ -46,6 +46,9 @@ def rabbitmq_channel():
     return channel
 
 
+channel = rabbitmq_channel()
+
+
 def get_results(search_parameter):
     search = {}
     search["search-parameters"] = search_parameter["search-parameters"]
@@ -78,11 +81,17 @@ def on_filght_recived(ch, method, properties, body):
 
 
 def refuse_results(hash):
-    pass
+    provider_name = provider_info["name"]
+
+    channel.exchange_declare(
+        exchange='results', exchange_type=ExchangeType.topic)
+
+    b = channel.basic_publish(exchange='results',
+                              routing_key='results.'+str(hash)+'.provider.'+provider_name+".refused", body=json.dumps({"error": "hash already known"}))
 
 
 def main():
-    channel = rabbitmq_channel()
+
     channel.exchange_declare(exchange='searchflight',
                              exchange_type=ExchangeType.fanout)
     queue = channel.queue_declare(queue='', exclusive=True)
@@ -95,11 +104,11 @@ def main():
 
 def publish_results(results, search, expiration_time):
     process_dict = search
+    process_dict["provider-name"] = provider_info["name"]
     process_dict["results"] = {}
     process_dict["results"] = results
     process_dict["expiration-time"] = expiration_time.strftime(
         "%Y-%m-%dT%H:%M:%S.%f")
-    print(process_dict)
     print("publishing results")
 
     reprocessor_service_url = "http://reprocessorservice:5111"

@@ -1,0 +1,21 @@
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reprocessordeploymentdeployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: reprocessor
+  template:
+    metadata:
+      labels:
+        app: reprocessor
+    spec:
+      containers:
+        - name: reprocessor
+          image: reprocessor
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5111
