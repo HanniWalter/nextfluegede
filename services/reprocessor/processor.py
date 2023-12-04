@@ -1,6 +1,10 @@
+
+
 import json
 import os
-
+unique_pod_id = os.environ.get("HOSTNAME")
+print("starting reprocessor")
+print("unique_pod_id:", unique_pod_id)
 intern_primary_key = 0
 
 
@@ -8,6 +12,10 @@ def get_intern_primary_key():
     global intern_primary_key
     intern_primary_key += 1
     return intern_primary_key
+
+
+def get_extern_primary_key():
+    return unique_pod_id+":"+str(get_intern_primary_key())
 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -40,7 +48,7 @@ def process_result(raw_result, expiration_time):
     result = {}
     result["expiration-time"] = expiration_time
     result["price-components"] = price_components
-    result["id"] = get_intern_primary_key()
+    result["id"] = get_extern_primary_key()
     raw_itinerary = raw_result["_itinerary"]
     carriers = raw_itinerary["carriers"]
     provider = raw_itinerary["provider"]
