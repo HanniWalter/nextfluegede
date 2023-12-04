@@ -33,7 +33,7 @@ def reprocessor():
 
 
 def publish_data(data):
-    provider_name = data["results-provider-name"]
+    provider_name = data["results-provider-name"][0]
 
     connection = rabbitmq_connection()
     channel = connection.channel()
