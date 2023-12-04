@@ -87,7 +87,7 @@ def refuse_results(hash):
         exchange='results', exchange_type=ExchangeType.topic)
 
     b = channel.basic_publish(exchange='results',
-                              routing_key='results.'+str(hash)+'.provider.'+provider_name+".refused", body=json.dumps({"error": "hash already known"}))
+                              routing_key='results.'+str(hash)+'.provider.'+provider_name+".refused", body=json.dumps({"error": "hash already known", "provider-name": provider_name}))
 
 
 def main():

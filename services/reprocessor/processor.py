@@ -65,8 +65,9 @@ def process(data):
     metadata["search-parameters"] = data["search-parameters"]
     metadata["parameter-hash"] = data["parameter-hash"]
     expiration_time = data["expiration-time"]
+    metadata["expiration-time"] = expiration_time
     metadata["results-origin"] = "provider"
-    metadata["results-provider-name"] = data["provider-name"]
+    metadata["results-provider-name"] = [data["provider-name"]]
 
     raw_results = data["results"]["result"]
     results = []

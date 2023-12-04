@@ -14,6 +14,7 @@ def get_redis_client(db):
 
 results_parent_db = get_redis_client(0)
 results_child_db = get_redis_client(1)
+source_db = get_redis_client(2)
 
 
 def cleanup(key):
@@ -37,13 +38,15 @@ def set_parent_db_expiration(parameter_hash):
 def add_data(data):
     parameter_hash = data["parameter-hash"]
     cleanup(parameter_hash)
+    set_source_data(parameter_hash, data["results-provider-name"],
+                    data["expiration-time"])
 
     key_existed = True
     if not results_parent_db.exists(parameter_hash):
         # create empty ordered set
         key_existed = False
 
-    for result in data["results"]:
+    for result in data["results"]["result"]:
         data_expiration = datetime.datetime.strptime(result["expiration-time"],
                                                      "%Y-%m-%dT%H:%M:%S.%f")
         # get free key in child db
@@ -60,6 +63,31 @@ def add_data(data):
             results_parent_db.expireat(parameter_hash, data_expiration)
             key_existed = True
     set_parent_db_expiration(parameter_hash)
+
+
+all_provider = set()
+
+
+def set_source_data(hash, providers, expiration_time):
+    print("set source data")
+    for provider in providers:
+        print(hash, provider, expiration_time)
+        all_provider.add(provider)
+
+        key = str(hash) + ":" + provider
+        source_db.set(key, 1)
+        source_db.expireat(key, datetime.datetime.strptime(
+            expiration_time, "%Y-%m-%dT%H:%M:%S.%f"))
+
+
+def get_source_data(hash):
+    print("get source data")
+    result = []
+    for provider in all_provider:
+        key = str(hash) + ":" + provider
+        if source_db.exists(key):
+            result.append(provider)
+    return result
 
 
 def get_data(parameter_hash):

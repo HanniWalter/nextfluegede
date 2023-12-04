@@ -5,9 +5,9 @@ resources:
   - providermanager
   - searchagent
   - reprocessor
+  - cachepod.yaml
 
   #- pricerpod.yaml
-  #- cachepod.yaml
 
   #- searchersimulatorpod.yaml
   #- searchersimulatorpod2.yaml
