@@ -36,10 +36,12 @@ def main():
 
 
 def on_result_received(ch, method, properties, body):
-    print("received result")
     body = json.loads(body)
-
-    print(body.keys())
+    if "error" in body:
+        print("no data from", body['provider-name'])
+    else:
+        print("data from", body["results-origin"],
+              body['results-provider-name'])
 
 
 if __name__ == "__main__":
