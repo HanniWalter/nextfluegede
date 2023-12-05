@@ -37,7 +37,7 @@ providers = ["travelfusion", "amadeus", "bing"]
 
 
 def registerPricedResult(body):
-    key = body["user-id"] + ":" + body["parameter-hash"]
+    key = str(body["user-id"]) + ":" + str(body["parameter-hash"])
     db = redisConnection("uidxhash_priced_results")
     db.set(key, json.dumps(body))
 

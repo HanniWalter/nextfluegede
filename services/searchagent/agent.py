@@ -35,12 +35,26 @@ def registerSearch(search):
     print("published search")
 
 
+def isSearchResultInDB(search):
+    response = requests.post("http://localhost:5110/hash",
+                             json=search)
+    parameter_hash = response.json()["hash"]
+    uid = search["user-id"]
+    db = redisConnection("uidxhash_priced_results")
+    key = str(uid) + ":" + str(parameter_hash)
+    result = db.get(key)
+    if result is None:
+        return False
+    else:
+        return True
+
+
 def getSearchResults(search):
     response = requests.post("http://localhost:5110/hash",
                              json=search)
     parameter_hash = response.json()["hash"]
     uid = search["user-id"]
     db = redisConnection("uidxhash_priced_results")
-    key = uid + ":" + parameter_hash
+    key = str(uid) + ":" + str(parameter_hash)
     result = db.get(key)
     return result

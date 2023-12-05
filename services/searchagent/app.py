@@ -10,11 +10,13 @@ def register_search():
     return jsonify({"status": "ok"})
 
 
-@app.route('/search', methods=['GET'])
+@app.route('/search/', methods=['GET'])
 def get_search():
     body = request.json
-    result = agent.getSearch(body)
-    return jsonify(result)
+    if agent.isSearchResultInDB(body):
+        return agent.getSearchResults(body)
+    else:
+        return {"message": "no result yet"}
 
 
 @app.route('/teapot', methods=['GET'])

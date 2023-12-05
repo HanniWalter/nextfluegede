@@ -43,7 +43,6 @@ def publish_data(data):
 
 
 def main():
-    channel = rabbitmq_channel()
     channel.queue_declare(queue='pricer')
     channel.basic_qos(prefetch_count=1)
     channel.basic_consume(

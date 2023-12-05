@@ -37,6 +37,7 @@ def main():
 
 
 def on_result_received(ch, method, properties, body):
+    print("received result")
     body = json.loads(body)
     if "error" in body:
         print("no data from", body['provider-name'])

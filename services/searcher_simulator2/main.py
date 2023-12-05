@@ -25,14 +25,20 @@ def single_search(userid):
     requests.post(searchagent_service_url+"/search/", json=searchdict)
 
 
+def get_results(userid):
+    searchdict = get_search(userid)
+    searchagent_service_url = "http://searchagentservice:5102"
+    r = requests.get(searchagent_service_url+"/search/", json=searchdict)
+    print(r.json())
+
+
 def main():
     userId = 1
 
-    time.sleep(4)
-    single_search(userid=42)
     time.sleep(2)
     single_search(userid=42)
     while True:
+        get_results(userid=42)
         pass
 
 
