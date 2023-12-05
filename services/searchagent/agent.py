@@ -1,28 +1,32 @@
 import rabbitmqConnection as rmqc
 import redis
 import requests
+import json
 
 searches = []
 rmq = rmqc.RabbitMQConnection()
 
 
 def redisConnection(db):
-    dbdict = {"searches": 0, "results": 1}
+    dbdict = {"uid_searches": 0, "hash_uid": 1,
+              "uidxhash_sources": 2, "raw_flights": 3, "uidxhash_priced_results": 4}
 
     r = redis.Redis(host='localhost', port=6379, db=dbdict[db])
     return r
 
 
 def registerSearch(search):
-    headers = {'Content-Type': 'application/json'}
     response = requests.post("http://localhost:5110/hash",
                              json=search)
     search["parameter-hash"] = response.json()["hash"]
     # register search in db
-    db = redisConnection("searches")
-    db.rpush(search["user-id"], search["parameter-hash"])
+    db = redisConnection("uid_searches")
+    db.rpush(search["user-id"], json.dumps(search))
     db.expire(search["user-id"], 5*60)
 
+    db2 = redisConnection("hash_uid")
+    db2.rpush(search["parameter-hash"], search["user-id"])
+    db2.expire(search["parameter-hash"], 5*60)
     # listen for results
     # todo
 
@@ -32,14 +36,11 @@ def registerSearch(search):
 
 
 def getSearchResults(search):
-    # check if user is already/ still registereds
-    # check if there are all resluts for one the one userid
-    # return results
-
-    pass
-
-
-def callbackSearchfound(ch, method, properties, body):
-    # get every intresting user ids
-    # add to interessting user ids
-    pass
+    response = requests.post("http://localhost:5110/hash",
+                             json=search)
+    parameter_hash = response.json()["hash"]
+    uid = search["user-id"]
+    db = redisConnection("uidxhash_priced_results")
+    key = uid + ":" + parameter_hash
+    result = db.get(key)
+    return result

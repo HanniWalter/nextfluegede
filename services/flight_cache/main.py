@@ -54,7 +54,8 @@ def on_filght_recived(ch, method, properties, body):
     parameter_hash = data["parameter-hash"]
     results = custom_db_connection.get_data(parameter_hash)
     source = custom_db_connection.get_source_data(parameter_hash)
-    data["results"] = results
+    data["results"] = {}
+    data["results"]["result"] = results
     data["results-origin"] = "cache"
     data["results-provider-name"] = source
     publish_result(data)

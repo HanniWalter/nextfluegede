@@ -5,6 +5,7 @@ import datetime
 from pika.exchange_type import ExchangeType
 import pricing
 
+
 def rabbitmq_channel():
     service_name = "rabbitmqservice"
     port_name = "amqp"
@@ -22,30 +23,33 @@ def rabbitmq_channel():
     channel = connection.channel()
     return channel
 
-def on_wrong_price_recived(ch, method, properties, body):
+
+def on_data_recived(ch, method, properties, body):
     data = json.loads(body)
     data = pricing.get_price(data)
     publish_data(data)
-    
+
+
 channel = rabbitmq_channel()
 
+
 def publish_data(data):
-    channel.exchange_declare(exchange='results',
-                             exchange_type=ExchangeType.direct)
+    data["results-origin"] = "pricer"
+    channel.exchange_declare(
+        exchange='results', exchange_type=ExchangeType.topic)
     b = channel.basic_publish(exchange='results',
-                              routing_key='rightprice',
-                              body=json.dumps(data)
-                              )
-    print("published data; parameter_hash:", data["parameter-hash"] ) 
+                              routing_key='results.'+str(data["parameter-hash"])+'.pricer.success', body=json.dumps(data))
+    print("published data; parameter_hash:", data["parameter-hash"])
 
 
 def main():
     channel = rabbitmq_channel()
-    channel.exchange_declare(exchange='results', exchange_type= ExchangeType.direct)
-    queue = channel.queue_declare(queue='wrongprice_pricer')
-    channel.queue_bind(exchange='results', queue=queue.method.queue, routing_key='wrongprice')
-    channel.basic_consume(queue=queue.method.queue , on_message_callback= on_wrong_price_recived, auto_ack=True)
-    channel.start_consuming() 
+    channel.queue_declare(queue='pricer')
+    channel.basic_qos(prefetch_count=1)
+    channel.basic_consume(
+        queue='pricer', on_message_callback=on_data_recived, auto_ack=True)
+    channel.start_consuming()
+
 
 if __name__ == "__main__":
     print("Starting provider manager")

@@ -2,6 +2,7 @@ import pika
 import os
 from pika.exchange_type import ExchangeType
 import json
+import agent
 
 
 def rabbitmq_connection():
@@ -40,8 +41,19 @@ def on_result_received(ch, method, properties, body):
     if "error" in body:
         print("no data from", body['provider-name'])
     else:
-        print("data from", body["results-origin"],
-              body['results-provider-name'])
+        if body["results-origin"] == "provider":
+            print("data from", body["results-origin"],
+                  body['results-provider-name'])
+            agent.registerResult(body)
+        elif body["results-origin"] == "cache":
+            print("data from", body["results-origin"],
+                  body['results-provider-name'])
+            agent.registerResult(body)
+        elif body["results-origin"] == "pricer":
+            print("data from", body["results-origin"])
+            agent.registerPricedResult(body)
+        else:
+            print("unknown origin", body["results-origin"])
 
 
 if __name__ == "__main__":

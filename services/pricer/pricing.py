@@ -1,10 +1,10 @@
-def get_price(data): 
+def get_price(data):
     pricing_parameters = data["pricing-parameters"]
-    data["results"]
-    for result in data["results"]:
+    for result in data["results"]["result"]:
         price_result = get_price_result(pricing_parameters, result)
         result["price"] = price_result
-    return data    
+    return data
+
 
 def get_price_result(pricing_parameters, result):
     fare = result["price-components"]["flight"]["fare"]["total"]
@@ -20,7 +20,7 @@ def get_price_result(pricing_parameters, result):
             fee += 5
         elif pricing_parameters["user_type"] == "GUEST":
             fee += 10
-        
+
         elif pricing_parameters["device"] == "DESKTOP":
             fee += 0
         elif pricing_parameters["device"] == "IOS":

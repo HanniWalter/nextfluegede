@@ -13,7 +13,8 @@ def register_search():
 @app.route('/search', methods=['GET'])
 def get_search():
     body = request.json
-    print(body)
+    result = agent.getSearch(body)
+    return jsonify(result)
 
 
 @app.route('/teapot', methods=['GET'])
