@@ -69,6 +69,7 @@ def process_result(raw_result, expiration_time):
 
 
 def process(data):
+    print(data)
     metadata = {}
     metadata["search-parameters"] = data["search-parameters"]
     metadata["parameter-hash"] = data["parameter-hash"]

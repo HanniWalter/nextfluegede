@@ -23,6 +23,8 @@ docker build services/pricer -t pricer:latest
 docker build services/searchagent -t searchagent:latest
 docker build services/searchagent_callback -t searchagentcallback:latest
 
+docker build services/website -t website:latest
+
 
 
 kubectl apply -k kubernetes/backend/

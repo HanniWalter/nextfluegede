@@ -31,3 +31,8 @@ spec:
         - name: searchagentcallback
           image: searchagentcallback
           imagePullPolicy: Never
+        - name: website
+          image: website
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5101

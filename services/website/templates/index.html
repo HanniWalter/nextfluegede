@@ -11,10 +11,12 @@
 	</head>
 	<body>
 		<h1> NEXT fluege.de </h1>
-		<div id="input">
-			        <label for="flightclass">Klasse:</label> <br>
-                                <input type="radio" name="flightclass" value="economy" checked> 
-                                <label for="economy">Economy</label> <br>
+
+		<div style="width: 100%; ">
+		<div id="input" style="width: 50%; float: left;">
+			    <label for="flightclass">Klasse:</label> <br>
+                <input type="radio" name="flightclass" value="economy" checked> 
+                <label for="economy">Economy</label> <br>
 				<input type="radio" name="flightclass" value="premium_economy"> 
 				<label for="premiumeconomy">Premium Economy</label> <br>
 				<input type="radio" name="flightclass" value="buisness"> 
@@ -23,7 +25,7 @@
 				<label for="first">First</label> <br>
 			        <hr>
 				<label>Reisende:</label> <br>
-				<input type="number" name="adults" id="adults" value="1">
+				<input type="number" name="adults" id="adults" value="2">
 				<label for="adults">Erwachsene</label> <br>
 				<input type="number" name="children" id="children" value="0">
 				<label for="children">Kinder</label> <br>
@@ -32,14 +34,14 @@
 				<hr>
 
   				<label for="fromplace">Von:</label><br>
-  				<input type="text" id="fromplace" name="fromplace"><br>
+  				<input type="text" id="fromplace" name="fromplace" value="LEJ"><br>
   				<label for="toPlace">Nach:</label><br>
-				<input type="text" id="toplace" name="toplace"><br>
+				<input type="text" id="toplace" name="toplace" value="JFK"><br>
 				<div id="second_locations" >
 				    <label for="fromplace2">Rückflug von:</label><br>
-  				    <input type="text" id="fromplace2" name="fromplace2"><br>
+  				    <input type="text" id="fromplace2" name="fromplace2" value="JFK"><br>
 				    <label for="toplace2">Rückflug nach:</label><br>
-  				    <input type="text" id="toplace2" name="toplace2"><br>				
+  				    <input type="text" id="toplace2" name="toplace2" value="BER"><br>				
 				</div>
 
 				<hr>		
@@ -53,31 +55,47 @@
 				<hr>
 
 				<label for="date_from">Abflugsdatum Hinflug:</label>
-                                <input type="date" id="datefrom" name="date_from" value="1/1/2000"> <br>
-			        <div id = date2>
+                <input type="date" id="datefrom" name="date_from" value="2023-12-24">
+				<input type="checkbox" id="flexdate1" name="flexdate1" value="">
+				<label for="flexdate2"> Flexdate</label><br>
+				<div id = date2>
 					<label for="dateto">Abflugsdatum Rückflug:</label>
-                                        <input type="date" name="dateto" id="dateto" value="1/1/2000">		        	
-			        </div>
+                	<input type="date" name="dateto" id="dateto" value="2023-12-27">		        	
+					<input type="checkbox" id="flexdate2" name="flexdate2" value="">
+					<label for="flexdate2"> Flexdate</label><br>
+				</div>
 
-                                <hr>
+                <hr>
 				<input type="submit" name="submit" value="Finde Flug" onclick="input_submit()">
 				<hr>
 
-				<details>
-					<summary>Geheim</summary>
-					<label for="days_bevor_from">Tage vor Hinflug</label>
-					<input type="number" name="days_bevor_from" id=dateoffset1  value="0"><br>
-                                        <label for="days_after_from">Tage nach Hinflug</label>
-					<input type="number" name="days_after_from" id="dateoffset2" value="1"><br>
-                                        <label for="days_bevor_to">Tage vor Rückflug</label>
-					<input type="number" name="days_bevor_to" id="dateoffset3" value="1"><br>
-                                        <label for="days_after_to">Tage nach Rückflug</label>
-					<input type="number" name="days_after_to" id="dateoffset4" value="0"><br>
-				</details>
+				
 		</div>
+
+		<div id="user" style="margin-left: 50%; ">
+		Userdata:
+		<label for="devicetype">devicetype:</label> <br>
+        <input type="radio" name="devicetype" value="DESKTOP" checked> 
+        <label for="DESKTOP">DESKTOP</label> <br>
+		<input type="radio" name="devicetype" value="ANDROID"> 
+		<label for="ANDROID">ANDROID</label> <br>
+		<input type="radio" name="devicetype" value="IOS"> 
+		<label for="IOS">IOS</label> <br>
+
+		<label for="user_type">user type:</label> <br>
+        <input type="radio" name="user_type" value="PREMIUM"> 
+        <label for="PREMIUM">Premium Abo</label> <br>
+		<input type="radio" name="user_type" value="MEMBER"> 
+		<label for="MEMBER">Mitglied</label> <br>
+		<input type="radio" name="user_type" value="GUEST" checked> 
+		<label for="GUEST">Gast</label> <br>
+		
+		</div>
+		</div>
+
 		<hr id = "over results">
 		<div id="results">		
-		
+		results:
 
 		</div>
 	<script>

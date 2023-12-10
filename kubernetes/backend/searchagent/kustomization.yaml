@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - searchagentdeployment.yaml
   - searchagentservice.yaml
+  - webservice.yaml

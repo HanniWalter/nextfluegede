@@ -36,9 +36,10 @@ def main():
     userId = 1
 
     time.sleep(2)
-    single_search(userid=42)
+    single_search(userid=43)
     while True:
-        get_results(userid=42)
+        time.sleep(2)
+        get_results(userid=43)
         pass
 
 

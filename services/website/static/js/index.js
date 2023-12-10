@@ -32,20 +32,9 @@ function search_json() {
 	
 	const date1 = new Date(document.querySelector("#datefrom").value)
 	const date2 = new Date(document.querySelector("#dateto").value)
-	const offset1 = document.querySelector("#dateoffset1").value
-	const offset2 = document.querySelector("#dateoffset2").value
-	const offset3 = document.querySelector("#dateoffset3").value
-	const offset4 = document.querySelector("#dateoffset4").value
-	var datefrombegin =  new Date()
+	const flexdate1 = document.querySelector("#flexdate1").checked
+	const flexdate2 = document.querySelector("#flexdate2").checked
 
-	//integrade offset idk why they dont work
-	datefrombegin.setDate(date1.getDate())
-	var datefromend = new Date()
-	datefromend.setDate(date1.getDate())
-	var datetobegin = new Date()
-	datetobegin.setDate(date2.getDate())
-	var datetoend = new Date()
-	datetoend.setDate(date2.getDate())
 
 	var obj = {
 		flight_class: flight_class,
@@ -64,28 +53,41 @@ function search_json() {
 		obj.to = to1
 	}
 	if (flight_type == "single"){
-		obj.dateBegin = datefrombegin
-		obj.dateEnd = datefromend
+		obj.date = date1
+		obj.flexdate = flexdate1
 	}else{
-		obj.dateFromBegin = datefrombegin
-		obj.dateFromEnd = datefromend
-		obj.dateToBegin = datetobegin
-		obj.dateToEnd = datetoend
+		obj.date1 = date1
+		obj.date2 = date2
+		obj.flexdate1 = flexdate1
+		obj.flexdate2 = flexdate2
 	}
-	
 	return obj
+}
+
+function user_json(){
+	const device_type = document.querySelector('input[name="devicetype"]:checked').value;
+	const user_type = document.querySelector('input[name="user_type"]:checked').value;
+	return {
+		device_type: device_type,
+		user_type: user_type,
+	}
 }
 
 function input_submit(){
     	const currentHost = window.location.hostname;
     	const currentPort = window.location.port;
-    	const url = `http://${currentHost}:${currentPort}/searchflight`
+    	const url = `http://${currentHost}:${currentPort}/searchflight/`
     	var xmlHttp = new XMLHttpRequest();
     	xmlHttp.open( "POST", url );
 	xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
-	xmlHttp.send(JSON.stringify(search_json()));	
-	//var response = JSON.parse(xmlHttp.responseText);
-	//alert(JSON.stringify(response))
+	const result = {
+		search: search_json(),
+	
+		user: user_json(),
+	}
+	xmlHttp.send(JSON.stringify(result));	
+	var response = JSON.parse(xmlHttp.responseText);
+	alert(JSON.stringify(response))
 }
 
 function init(){
