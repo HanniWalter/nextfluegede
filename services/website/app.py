@@ -19,6 +19,25 @@ def convert_date_format(input_date_string):
     return output_date_string
 
 
+def clean_results(data, max=10):
+    raw_results = data["results"]["result"]
+    results = []
+    for raw_result in raw_results:
+        price = int(raw_result["price"]["total"])
+        legs = []
+        for raw_leg in raw_result["_itinerary"]["legs"]:
+            starttime = raw_leg["segments"][0]["schedule"]["departure"]
+            endtime = raw_leg["segments"][-1]["schedule"]["arrival"]
+            airports = [raw_leg["segments"][0]["airports"]["departure"]["iata"]
+                        ] + [segment["airports"]["arrival"]["iata"] for segment in raw_leg["segments"]]
+            legs += [{"starttime": starttime,
+                      "endtime": endtime, "airports": airports}]
+        results += [{"price": price, "legs": legs}]
+    results = sorted(results, key=lambda k: k['price'])
+    results = results[:min(max, len(results))]
+    return results
+
+
 def get_search(data, userid):
     search = {}
     search_parameters = {}
@@ -92,19 +111,26 @@ def searchflights():
         searchagent_service_url = "http://localhost:5102"
         value = request.get_json()
         search = get_search(value, 42)
-        print(search)
         r = requests.post(searchagent_service_url+"/search/", json=search)
 
-        response = jsonify({})
+        response = jsonify({"message": "ok"})
         response.headers.add('Access-Control-Allow-Origin', '*')
-
         return response
 
-    if request.method == "GET":
-        searchdict = get_mock_search(userid=42)
+
+@app.route("/getresults/", methods=["POST"])
+def getresults():
+    if request.method == "POST":
         searchagent_service_url = "http://localhost:5102"
-        r = requests.get(searchagent_service_url+"/search/", json=searchdict)
-        response = jsonify(r.json())
+        value = request.get_json()
+        search = get_search(value, 42)
+        r = requests.get(searchagent_service_url+"/search/", json=search)
+
+        if "message" in r.json():
+            response = jsonify({"results": []})
+        else:
+            clean = clean_results(r.json())
+            response = jsonify({"results": clean})
         response.headers.add('Access-Control-Allow-Origin', '*')
 
         return response

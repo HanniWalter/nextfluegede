@@ -90,6 +90,23 @@ function input_submit(){
 	alert(JSON.stringify(response))
 }
 
+function get_results(){
+	const result = {
+		search: search_json(),
+	
+		user: user_json(),
+	}
+	const currentHost = window.location.hostname;
+	const currentPort = window.location.port;
+	const url = `http://${currentHost}:${currentPort}/getresults/`
+	var xmlHttp = new XMLHttpRequest();
+	xmlHttp.open( "POST", url );
+	xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
+	xmlHttp.send(JSON.stringify(result));	
+	var response = JSON.parse(xmlHttp.responseText);
+	alert(JSON.stringify(response))
+}
+
 function init(){
 	input_changed()
 	//const input_form = document.querySelector("input_form");

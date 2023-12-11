@@ -12,7 +12,7 @@
 	<body>
 		<h1> NEXT fluege.de </h1>
 
-		<div style="width: 100%; ">
+		<div style="width: 100%; color: grey;">
 		<div id="input" style="width: 50%; float: left;">
 			    <label for="flightclass">Klasse:</label> <br>
                 <input type="radio" name="flightclass" value="economy" checked> 
@@ -89,13 +89,19 @@
 		<label for="MEMBER">Mitglied</label> <br>
 		<input type="radio" name="user_type" value="GUEST" checked> 
 		<label for="GUEST">Gast</label> <br>
+		<label for="user_id">user id:</label> <br>
+		<input type="text" name="user_id" id="user_id" value="42"> <br>
 		
 		</div>
 		</div>
 
+		
+		<div id="results"  style="width: 100%;">	
 		<hr id = "over results">
-		<div id="results">		
+		<input type="submit" name="submit" value="Finde Flug" onclick="get_results()">
+		<hr>	
 		results:
+
 
 		</div>
 	<script>
