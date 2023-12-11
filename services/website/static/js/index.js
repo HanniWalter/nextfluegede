@@ -91,7 +91,7 @@ function input_submit(){
 }
 
 function get_results(){
-	const result = {
+	const requestdata = {
 		search: search_json(),
 	
 		user: user_json(),
@@ -102,9 +102,25 @@ function get_results(){
 	var xmlHttp = new XMLHttpRequest();
 	xmlHttp.open( "POST", url );
 	xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
-	xmlHttp.send(JSON.stringify(result));	
+	xmlHttp.send(JSON.stringify(requestdata));	
 	var response = JSON.parse(xmlHttp.responseText);
-	alert(JSON.stringify(response))
+	
+	var resultsContainer = document.getElementById("results");
+    resultsContainer.innerHTML = "<hr>Results:<br>";
+	for (var i = 0; i < flightResults.length; i++) {
+		var result = flightResults[i];
+		resultsContainer.innerHTML += "<strong>Price:</strong> " + result.price + "<br>";
+
+		for (var j = 0; j < result.legs.length; j++) {
+			var leg = result.legs[j];
+			resultsContainer.innerHTML += "<strong>Leg " + (j + 1) + ":</strong><br>";
+			resultsContainer.innerHTML += "Start Time: " + leg.starttime + "<br>";
+			resultsContainer.innerHTML += "End Time: " + leg.endtime + "<br>";
+			resultsContainer.innerHTML += "Airports: " + leg.airports.join(" -> ") + "<br><br>";
+		}
+
+		resultsContainer.innerHTML += "<hr>";
+	}
 }
 
 function init(){
