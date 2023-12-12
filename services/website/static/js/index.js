@@ -73,39 +73,70 @@ function user_json(){
 	}
 }
 
-function input_submit(){
-    	const currentHost = window.location.hostname;
-    	const currentPort = window.location.port;
-    	const url = `http://${currentHost}:${currentPort}/searchflight/`
-    	var xmlHttp = new XMLHttpRequest();
-    	xmlHttp.open( "POST", url );
-	xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
-	const result = {
-		search: search_json(),
-	
-		user: user_json(),
-	}
-	xmlHttp.send(JSON.stringify(result));	
-	var response = JSON.parse(xmlHttp.responseText);
-	alert(JSON.stringify(response))
+function input_submit() {
+    const currentHost = window.location.hostname;
+    const currentPort = window.location.port;
+    const url = `http://${currentHost}:${currentPort}/searchflight/`;
+
+    var xmlHttp = new XMLHttpRequest();
+
+    xmlHttp.open("POST", url);
+    xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
+
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            try {
+                var response = JSON.parse(xmlHttp.responseText);
+				alert(JSON.stringify(response));
+            } catch (err) {
+                console.error("Error parsing JSON response:", err);
+            }
+        }
+    };
+
+    const result = {
+        search: search_json(),
+        user: user_json(),
+    }
+
+    xmlHttp.send(JSON.stringify(result));
 }
 
-function get_results(){
-	const requestdata = {
-		search: search_json(),
-	
-		user: user_json(),
-	}
-	const currentHost = window.location.hostname;
-	const currentPort = window.location.port;
-	const url = `http://${currentHost}:${currentPort}/getresults/`
-	var xmlHttp = new XMLHttpRequest();
-	xmlHttp.open( "POST", url );
-	xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
-	xmlHttp.send(JSON.stringify(requestdata));	
-	var response = JSON.parse(xmlHttp.responseText);
-	
-	var resultsContainer = document.getElementById("results");
+function get_results() {
+    const requestdata = {
+        search: search_json(),
+        user: user_json(),
+    };
+
+    const currentHost = window.location.hostname;
+    const currentPort = window.location.port;
+    const url = `http://${currentHost}:${currentPort}/getresults/`;
+
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.open("POST", url);
+    xmlHttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
+
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4) {
+            if (xmlHttp.status == 200) {
+                try {
+                    var response = JSON.parse(xmlHttp.responseText);
+                    handleResults(response);
+                } catch (err) {
+                    console.error("Error parsing JSON response:", err);
+                }
+            } else {
+                console.error("Error: ", xmlHttp.status);
+            }
+        }
+    };
+
+    xmlHttp.send(JSON.stringify(requestdata));
+}
+
+function handleResults(response) {
+	var flightResults = response.results;
+    var resultsContainer = document.getElementById("results_content");
     resultsContainer.innerHTML = "<hr>Results:<br>";
 	for (var i = 0; i < flightResults.length; i++) {
 		var result = flightResults[i];
